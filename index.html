@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0f172a">
+  <title>Aether – Your Lifelong AI Companion</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Splash / Onboarding -->
+  <div id="splash" class="screen active">
+    <div class="splash-content">
+      <div class="logo">Aether</div>
+      <p class="tagline">Your lifelong AI partner for learning, research, health & daily life</p>
+      <div class="splash-features">
+        <div class="feat">🔒 Private • On-device first</div>
+        <div class="feat">🌍 Built for everyone</div>
+        <div class="feat">📚 Grows with you</div>
+      </div>
+      <button class="btn primary" onclick="startApp()">Enter Aether</button>
+      <p class="privacy-note">All core intelligence runs on your device. You control every memory.</p>
+    </div>
+  </div>
+
+  <!-- Main App Shell -->
+  <div id="app" class="screen">
+    <!-- Top Status Bar -->
+    <header class="top-bar">
+      <div class="status-left">
+        <span class="time" id="current-time">9:41</span>
+      </div>
+      <div class="status-center">
+        <span class="app-name">Aether</span>
+      </div>
+      <div class="status-right">
+        <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">◐</button>
+        <button class="icon-btn" onclick="showScreen('settings')" title="Settings">⚙</button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="main-content">
+      <!-- HOME / Morning Brief -->
+      <section id="home" class="view active">
+        <div class="greeting">
+          <h1 id="greeting-text">Good evening</h1>
+          <p class="subtitle">Here’s your personalized brief</p>
+        </div>
+
+        <div class="card energy-card">
+          <div class="card-header">
+            <span class="card-title">Energy & Focus</span>
+            <span class="badge positive">Optimal after 10:00</span>
+          </div>
+          <p class="card-body">Your recent sleep and activity patterns suggest peak focus between 10:00–13:00. I’ve protected this window for deep work.</p>
+          <button class="btn ghost small" onclick="showScreen('agent')">Adjust schedule →</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Learning Progress</span>
+            <span class="badge">3 active paths</span>
+          </div>
+          <div class="progress-item">
+            <div class="progress-label">Climate Systems Research</div>
+            <div class="progress-bar"><div class="fill" style="width:68%"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-label">Spanish Conversation</div>
+            <div class="progress-bar"><div class="fill" style="width:42%"></div></div>
+          </div>
+          <button class="btn ghost small" onclick="showScreen('learn')">Continue learning →</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Today’s Priorities</span>
+          </div>
+          <ul class="priority-list">
+            <li><span class="check">○</span> Review renewable energy notes (20 min)</li>
+            <li><span class="check">○</span> Draft budget for online course</li>
+            <li><span class="check">○</span> Evening reflection & knowledge link</li>
+          </ul>
+          <button class="btn primary small" onclick="showScreen('agent')">Ask Aether to help →</button>
+        </div>
+
+        <div class="quick-actions">
+          <button class="qa-btn" onclick="showScreen('capture')">
+            <span class="qa-icon">🎤</span>
+            <span>Capture</span>
+          </button>
+          <button class="qa-btn" onclick="showScreen('research')">
+            <span class="qa-icon">🔍</span>
+            <span>Research</span>
+          </button>
+          <button class="qa-btn" onclick="showScreen('knowledge')">
+            <span class="qa-icon">🧠</span>
+            <span>Knowledge</span>
+          </button>
+          <button class="qa-btn" onclick="showScreen('health')">
+            <span class="qa-icon">❤️</span>
+            <span>Health</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- AGENT / Chat -->
+      <section id="agent" class="view">
+        <div class="chat-header">
+          <h2>Talk to Aether</h2>
+          <p class="subtitle">Multi-step agent • Private by default</p>
+        </div>
+        <div class="chat-container" id="chat-container">
+          <div class="message ai">
+            <div class="msg-bubble">
+              Hello. I’m ready to help with research, learning plans, health insights, schedules, or anything else. What would you like to accomplish?
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="suggested-prompts">
+            <button class="prompt-chip" onclick="sendPrompt('Research careers in renewable energy and create a 30-day learning plan')">Research + Plan</button>
+            <button class="prompt-chip" onclick="sendPrompt('Summarize my recent notes on sleep and suggest schedule changes')">Health + Schedule</button>
+            <button class="prompt-chip" onclick="sendPrompt('Help me budget for an online course next month')">Budget help</button>
+          </div>
+          <div class="input-row">
+            <input type="text" id="chat-input" placeholder="Ask or command anything…" onkeydown="if(event.key==='Enter')sendMessage()">
+            <button class="btn primary send-btn" onclick="sendMessage()">↑</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- CAPTURE -->
+      <section id="capture" class="view">
+        <div class="view-header">
+          <h2>Capture</h2>
+          <p class="subtitle">Voice, photo, text, or link — instantly organized</p>
+        </div>
+        <div class="capture-area">
+          <button class="capture-btn large" onclick="simulateCapture('voice')">
+            <span class="big-icon">🎤</span>
+            <span>Hold to speak</span>
+          </button>
+          <div class="capture-options">
+            <button class="capture-opt" onclick="simulateCapture('photo')">📷 Photo</button>
+            <button class="capture-opt" onclick="simulateCapture('text')">✏️ Text</button>
+            <button class="capture-opt" onclick="simulateCapture('link')">🔗 Link</button>
+          </div>
+        </div>
+        <div id="capture-result" class="card hidden">
+          <div class="card-header">
+            <span class="card-title">Captured & Linked</span>
+            <span class="badge positive">Added to Knowledge Graph</span>
+          </div>
+          <p id="capture-text" class="card-body"></p>
+          <p class="meta">Linked to: Climate Systems • Personal Goals • Health Patterns</p>
+        </div>
+      </section>
+
+      <!-- RESEARCH -->
+      <section id="research" class="view">
+        <div class="view-header">
+          <h2>Research Mode</h2>
+          <p class="subtitle">Cited answers → structured notes → action plans</p>
+        </div>
+        <div class="research-input">
+          <input type="text" id="research-query" placeholder="What do you want to understand deeply?">
+          <button class="btn primary" onclick="runResearch()">Research</button>
+        </div>
+        <div id="research-result" class="hidden">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Key Findings</span>
+              <span class="badge">Sources cited</span>
+            </div>
+            <div id="research-findings" class="card-body"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Structured Notes</span></div>
+            <div id="research-notes" class="card-body mono"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Suggested Actions</span></div>
+            <ul id="research-actions" class="priority-list"></ul>
+            <button class="btn primary small" onclick="addToPlan()">Add to my plan →</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- KNOWLEDGE GRAPH -->
+      <section id="knowledge" class="view">
+        <div class="view-header">
+          <h2>Your Knowledge</h2>
+          <p class="subtitle">Living personal graph • Fully under your control</p>
+        </div>
+        <div class="kg-stats">
+          <div class="stat"><span class="num">247</span><span class="label">Nodes</span></div>
+          <div class="stat"><span class="num">891</span><span class="label">Links</span></div>
+          <div class="stat"><span class="num">18</span><span class="label">Topics</span></div>
+        </div>
+        <div class="kg-search">
+          <input type="text" placeholder="Search your knowledge…" id="kg-search" oninput="filterKnowledge()">
+        </div>
+        <div class="kg-nodes" id="kg-nodes">
+          <!-- populated by JS -->
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Recent Connections</span></div>
+          <ul class="connection-list">
+            <li>“Sleep quality” ↔ “Focus windows” ↔ “Study scheduling”</li>
+            <li>“Renewable energy” ↔ “Career transition” ↔ “Budget planning”</li>
+            <li>“Spanish practice” ↔ “Travel goals 2027”</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- HEALTH -->
+      <section id="health" class="view">
+        <div class="view-header">
+          <h2>Health Insights</h2>
+          <p class="subtitle">Patterns, not just numbers • Privacy first</p>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Sleep & Recovery</span>
+            <span class="badge positive">Improving</span>
+          </div>
+          <p class="card-body">Average 7.2 h over last 14 days. Deep sleep up 12%. Your best cognitive days follow nights with >1.5 h deep sleep.</p>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Energy Pattern</span>
+          </div>
+          <div class="energy-chart">
+            <div class="bar" style="height:40%"><span>6a</span></div>
+            <div class="bar" style="height:55%"><span>8a</span></div>
+            <div class="bar high" style="height:90%"><span>10a</span></div>
+            <div class="bar high" style="height:95%"><span>12p</span></div>
+            <div class="bar" style="height:70%"><span>2p</span></div>
+            <div class="bar" style="height:50%"><span>4p</span></div>
+            <div class="bar" style="height:35%"><span>6p</span></div>
+            <div class="bar" style="height:25%"><span>8p</span></div>
+          </div>
+          <p class="meta">Peak focus window: 10:00 – 13:30</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Suggestions</span></div>
+          <ul class="priority-list">
+            <li>Protect 10:00–13:00 for deep work this week</li>
+            <li>Short walk after lunch improves afternoon focus</li>
+            <li>Consider earlier wind-down (linked to better deep sleep)</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- LEARN -->
+      <section id="learn" class="view">
+        <div class="view-header">
+          <h2>Learning Paths</h2>
+          <p class="subtitle">Adaptive • Lifelong • Goal-linked</p>
+        </div>
+        <div class="card path-card">
+          <div class="card-header">
+            <span class="card-title">Climate Systems</span>
+            <span class="badge">68% complete</span>
+          </div>
+          <p class="card-body">Next: Feedback loops in Earth’s energy balance (25 min)</p>
+          <button class="btn primary small">Continue session</button>
+        </div>
+        <div class="card path-card">
+          <div class="card-header">
+            <span class="card-title">Spanish Conversation</span>
+            <span class="badge">42% complete</span>
+          </div>
+          <p class="card-body">Next: Ordering food & travel phrases (15 min practice)</p>
+          <button class="btn primary small">Practice now</button>
+        </div>
+        <div class="card path-card">
+          <div class="card-header">
+            <span class="card-title">Personal Finance Mastery</span>
+            <span class="badge">New</span>
+          </div>
+          <p class="card-body">Created from your recent budget questions</p>
+          <button class="btn ghost small">Start path</button>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="settings" class="view">
+        <div class="view-header">
+          <h2>Settings & Control</h2>
+          <p class="subtitle">You own every memory</p>
+        </div>
+        <div class="settings-group">
+          <h3>Accessibility</h3>
+          <label class="setting-row">
+            <span>Large text</span>
+            <input type="checkbox" id="large-text" onchange="toggleLargeText()">
+          </label>
+          <label class="setting-row">
+            <span>High contrast</span>
+            <input type="checkbox" id="high-contrast" onchange="toggleHighContrast()">
+          </label>
+          <label class="setting-row">
+            <span>Reduce motion</span>
+            <input type="checkbox" checked>
+          </label>
+          <label class="setting-row">
+            <span>Voice-first mode</span>
+            <input type="checkbox">
+          </label>
+        </div>
+        <div class="settings-group">
+          <h3>Privacy & Memory</h3>
+          <label class="setting-row">
+            <span>On-device processing only</span>
+            <input type="checkbox" checked>
+          </label>
+          <button class="btn ghost full" onclick="alert('Memory ledger opened (demo)')">View Memory Ledger</button>
+          <button class="btn ghost full" onclick="alert('Full data export started (demo)')">Export all data</button>
+          <button class="btn danger full" onclick="alert('This would permanently delete selected memories')">Delete selected memories</button>
+        </div>
+        <div class="settings-group">
+          <h3>About</h3>
+          <p class="meta">Aether v1.0 • Prototype for 2027<br>Private by design • Built for every person</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-view="home" onclick="showScreen('home')">
+        <span class="nav-icon">🏠</span>
+        <span>Home</span>
+      </button>
+      <button class="nav-btn" data-view="agent" onclick="showScreen('agent')">
+        <span class="nav-icon">✦</span>
+        <span>Agent</span>
+      </button>
+      <button class="nav-btn" data-view="capture" onclick="showScreen('capture')">
+        <span class="nav-icon">＋</span>
+        <span>Capture</span>
+      </button>
+      <button class="nav-btn" data-view="knowledge" onclick="showScreen('knowledge')">
+        <span class="nav-icon">🧠</span>
+        <span>Knowledge</span>
+      </button>
+      <button class="nav-btn" data-view="health" onclick="showScreen('health')">
+        <span class="nav-icon">♡</span>
+        <span>Health</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
